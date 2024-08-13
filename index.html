@@ -4,24 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HCE Demo Client</title>
+    <link rel="stylesheet" href="style.css">
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
 </head>
-<style>
-    video {
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: -1;
-    }
-    canvas {
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 1;
-    }
-</style>
 <body>
-    <video id="videoStream" autoplay></video>
+    <div class="flexWrapper">
+        <div id="wrapper">
+            <video id="videoStream" autoplay></video>
+        </div>
+        <table id="e2e">
+            <tr>
+                <td>Frame</td>
+                <td>Latency</td>
+            </tr>
+        </table>
+    </div>
     <script src="client.js"></script>
 </body>
 </html>

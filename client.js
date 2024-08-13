@@ -1,3 +1,6 @@
+const WEBSERVER = "http://localhost:8502"
+// const WEBSERVER = "https://hce-webserver-aab6e6335fe3.herokuapp.com"
+
 // Camera input constraints
 const constraints = {
     video: {
@@ -13,7 +16,7 @@ const inputContext = inputCanvas.getContext("2d")
 const outputCanvas = document.createElement("canvas")
 const outputContext = outputCanvas.getContext("2d")
 
-document.body.appendChild(outputCanvas)
+document.getElementById("wrapper").appendChild(outputCanvas)
 
 // Define constants
 const detectionThreshold = 0.5
@@ -38,18 +41,31 @@ const drawBoxes = (objects) => {
     }
 }
 
+// Update latency display
+counter = 0;
+const latencyTable = document.getElementById("e2e")
+const averageLatencyDisplay = document.getElementById("e2e-avg")
+const updateLatency = (latency) => {
+    counter += 1;
+    let row = latencyTable.insertRow();
+    let cell1 = row.insertCell(0);
+    let cell2 = row.insertCell(1);
+    cell1.innerHTML = counter;
+    cell2.innerHTML = latency;
+}
+
 // Send POST request to inference server for object detection
 const getInference = async (image) => {
+    let startTime = performance.now();
     let formData = new FormData();
     formData.append("image", image);
-    const response = await fetch("http://localhost:8502/image", {
+    const response = await fetch(`${WEBSERVER}/image`, {
         method: "POST",
         body: formData
     });
     const data = await response.json();
-
     drawBoxes(data["objects"]);
-
+    if (counter < 1000) { updateLatency(performance.now() - startTime); }
     // Send next frame for inference
     inputContext.drawImage(video, 
         0, 0, video.videoWidth, video.videoHeight, 
